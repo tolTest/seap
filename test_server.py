@@ -45,7 +45,7 @@ def test_syntax():
     """Test that the server syntax is valid"""
     print("Testing Python syntax...")
     result = subprocess.run(
-        ["python3", "-m", "py_compile", "search_server.py"],
+        [sys.executable, "-m", "py_compile", "search_server.py"],
         capture_output=True,
         text=True
     )
@@ -59,14 +59,19 @@ def test_syntax():
 def test_dependencies():
     """Test that required dependencies are available"""
     print("Testing dependencies...")
-    required = {'fastmcp': 'fastmcp', 'httpx': 'httpx', 'beautifulsoup4': 'bs4'}
+    # Map package names to their import names
+    dependencies = {
+        'fastmcp': 'fastmcp',
+        'httpx': 'httpx',
+        'bs4': 'beautifulsoup4'  # import as bs4, package name is beautifulsoup4
+    }
     missing = []
     
-    for display_name, import_name in required.items():
+    for module_name, package_name in dependencies.items():
         try:
-            __import__(import_name)
+            __import__(module_name)
         except ImportError:
-            missing.append(display_name)
+            missing.append(package_name)
     
     if missing:
         print(f"✗ Missing dependencies: {', '.join(missing)}\n")
